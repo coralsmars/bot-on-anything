@@ -44,5 +44,6 @@ class PluginManager:
             log.info(f'e_context.action {e_context.action}')
             if plugin.enabled and e_context.action == EventAction.CONTINUE:
                 if(e_context.event in plugin.handlers):
+                    log.info(f'emit_event plugin. name {plugin.name}')
                     plugin.handlers[e_context.event](e_context, *args, **kwargs)
         return e_context
