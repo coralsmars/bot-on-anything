@@ -56,7 +56,7 @@ class MJ(Plugin):
 
     
     def handle_query(self, e_context: EventContext):
-        print(f'e_context: {json.dumps(e_context)}')
+        logger.info(f'e_context: {json.dumps(e_context)}')
         channel = e_context['channel']
         channel_type = self.channel_types.get(type(channel), None)
         if (channel_type):
@@ -84,7 +84,7 @@ class MJ(Plugin):
 
     def handle_http(self, e_context: EventContext):
         reply = e_context["reply"]
-        print(f'e_context reply: {reply}')
+        logger.info(f'e_context reply: {reply}')
         if e_context['args'].get('type', '') == 'IMAGE_CREATE':
             if isinstance(reply, list):
                 images = ""

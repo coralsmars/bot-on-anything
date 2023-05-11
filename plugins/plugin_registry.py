@@ -52,6 +52,6 @@ class PluginRegistry:
     def list_plugins(self):
         logger.info('=======!!!===')
         for l in self.plugins:
-            logger.info(f'plugin name{l.name}' )
+            logger.info(f'plugin name {l.name}' )
         logger.info('======')
         return [plugin for plugin in self.plugins]
