@@ -4,6 +4,7 @@ import inspect
 from plugins.plugin import Plugin
 from common.log import _get_logger
 import json
+
 from common import functions
 
 @functions.singleton
