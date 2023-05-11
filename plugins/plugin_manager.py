@@ -42,6 +42,8 @@ class PluginManager:
         
         for plugin in self.plugin_registry.list_plugins():
             log.info(f'e_context.action {e_context.action}')
+            if plugin.name == 'MJ':
+                plugin.enabled = True
             if plugin.enabled and e_context.action == EventAction.CONTINUE:
                 if(e_context.event in plugin.handlers):
                     log.info(f'emit_event plugin. name {plugin.name}')

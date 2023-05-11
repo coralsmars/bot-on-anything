@@ -21,7 +21,7 @@ from common.log import logger
 import requests
 
 
-@plugins.register(name="MJ", desire_priority=90, hidden=True, desc="A MJ plugin that create images from model", version="0.1", author="Martins")
+@plugins.register(name="MJ", desire_priority=0, hidden=True, desc="A MJ plugin that create images from model", version="0.1", author="Martins")
 class MJ(Plugin):
     def __init__(self):
         super().__init__()
