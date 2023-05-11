@@ -41,7 +41,7 @@ class PluginManager:
     def emit_event(self, e_context: EventContext, *args, **kwargs):
         
         for plugin in self.plugin_registry.list_plugins():
-            log.info(f'e_context.action {e_context.action}')
+            log.info(f'e_context.action {e_context.action} e_context.event:{e_context.event}')
             if plugin.name == 'MJ':
                 plugin.enabled = True
             if plugin.enabled and e_context.action == EventAction.CONTINUE:
