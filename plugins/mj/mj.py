@@ -12,7 +12,6 @@ from common.log import logger
 import uuid
 import json
 import mj_global,time
-
 from config import conf
 import plugins
 from plugins import *
