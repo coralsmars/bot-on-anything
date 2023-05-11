@@ -4,7 +4,7 @@ import importlib.util
 from plugins.event import EventAction, EventContext,Event
 from plugins.plugin_registry import PluginRegistry
 from common import functions, log
-
+import traceback
 @functions.singleton
 class PluginManager:
     def __init__(self, plugins_dir="./plugins/"):
@@ -19,6 +19,7 @@ class PluginManager:
                     plugin_module = self.load_plugin_module(plugin_name)
                     self.plugin_registry.register_from_module(plugin_module)
                 except Exception as e:
+                    traceback.print_exc()
                     log.warn("Failed to import plugin %s" % (plugin_name))
 
     def find_plugin_names(self):
