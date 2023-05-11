@@ -23,11 +23,11 @@ app = Flask(__name__)
 
 
 @app.route('/wechat', methods=['GET', 'POST'])
-def handler_msg():
+def handler_wechat_msg():
     return WechatEnterpriseChannel().handle()
 
 @app.route('/mj', methods=['POST'])
-def handler_msg():
+def handler_mj_msg():
      result = request.get_json()
      msgId=result['msgId']
      if msgId.startswith('wx__'):
