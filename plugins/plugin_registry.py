@@ -2,7 +2,7 @@
 
 import inspect
 from plugins.plugin import Plugin
-from common.log import _get_logger
+from common.log import logger
 import json
 
 from common import functions
