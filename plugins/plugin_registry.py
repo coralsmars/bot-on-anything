@@ -2,7 +2,7 @@
 
 import inspect
 from plugins.plugin import Plugin
-from common.log import logger
+from common.log import logger,json
 from common import functions
 
 @functions.singleton
@@ -48,4 +48,8 @@ class PluginRegistry:
         return plugin
 
     def list_plugins(self):
+        logger.info('=======!!!===')
+        for l in self.plugins:
+            logger.info(f'plugin {json.dumps(l)}' )
+        logger.info('======')
         return [plugin for plugin in self.plugins]
