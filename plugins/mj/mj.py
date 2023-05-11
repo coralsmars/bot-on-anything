@@ -13,8 +13,6 @@ import uuid
 import json
 import mj_global,time
 
-# from bridge.context import ContextType
-# from bridge.reply import Reply, ReplyType
 from config import conf
 import plugins
 from plugins import *
