@@ -84,7 +84,7 @@ class MJ(Plugin):
 
     def handle_http(self, e_context: EventContext):
         reply = e_context["reply"]
-        logger.info(f'e_context reply: {reply}')
+        logger.info(f'e_context handle_http reply: {reply}')
         if e_context['args'].get('type', '') == 'IMAGE_CREATE':
             if isinstance(reply, list):
                 images = ""
