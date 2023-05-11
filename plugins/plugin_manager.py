@@ -5,6 +5,7 @@ from plugins.event import EventAction, EventContext,Event
 from plugins.plugin_registry import PluginRegistry
 from common import functions, log
 import traceback
+
 @functions.singleton
 class PluginManager:
     def __init__(self, plugins_dir="./plugins/"):
@@ -38,6 +39,7 @@ class PluginManager:
         return module
 
     def emit_event(self, e_context: EventContext, *args, **kwargs):
+        log.info('=======111!!!===')
         for plugin in self.plugin_registry.list_plugins():
             if plugin.enabled and e_context.action == EventAction.CONTINUE:
                 if(e_context.event in plugin.handlers):
