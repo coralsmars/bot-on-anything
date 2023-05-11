@@ -10,7 +10,7 @@ from channel.channel import Channel
 from concurrent.futures import ThreadPoolExecutor
 from common.log import logger
 from config import conf
-
+from plugins.mj import mj_global
 from wechatpy.enterprise.crypto import WeChatCrypto
 from wechatpy.enterprise import WeChatClient
 from wechatpy.exceptions import InvalidSignatureException
@@ -25,6 +25,15 @@ app = Flask(__name__)
 @app.route('/wechat', methods=['GET', 'POST'])
 def handler_msg():
     return WechatEnterpriseChannel().handle()
+
+@app.route('/mj', methods=['POST'])
+def handler_msg():
+     result = request.get_json()
+     msgId=result['msgId']
+     if msgId.startswith('wx__'):
+        mj_global.put(msgId, result)
+
+     
 
 
 _conf = conf().get("channel").get("wechat_com")
