@@ -85,7 +85,7 @@ class WechatEnterpriseChannel(Channel):
             file_name = os.getcwd() + '/' + str(uuid.uuid4()) + '.png'
             if download_image(image_url=image_url, file_name=file_name):
                 media_id = None
-                with open(file_name, 'r+') as f:
+                with open(file_name, 'rb+') as f:
                     data = self.client.media.upload('image', f)
                     logger.info(f'json-data:{data}')
                     media_id = data.get('media_id', None)
