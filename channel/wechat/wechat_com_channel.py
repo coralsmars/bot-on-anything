@@ -81,7 +81,7 @@ class WechatEnterpriseChannel(Channel):
         
         #logger.info('[WXCOM] sendMsg={}, receiver={} msg_type {}'.format(msg, receiver, msg_type))
         if msg_type == 'IMAGE_CREATE':
-            image_url = reply['image_url']
+            image_url = 'https://cong-img.oss-cn-hangzhou.aliyuncs.com/mj/dr_fd5d2932-317f-4f21-ab44-4c7d1a33f42a_thumail_1.png?x-oss-process=style/my_jpg' # reply['image_url']
             # pic_res = requests.get(image_url, stream=True)
             # image_storage = io.BytesIO()
             # for block in pic_res.iter_content(1024):
@@ -90,7 +90,7 @@ class WechatEnterpriseChannel(Channel):
             media_id = None
             
             
-            file_name = 'image_cache/' + str(uuid.uuid4()) + '.png'
+            file_name = 'image_cache/' + str(uuid.uuid4()) + '.jpg'
             if download_image(image_url=image_url, file_name=file_name):
                 data = self.client.media.upload('image', file_name)
                 logger.info(f'json-data:{data}')
