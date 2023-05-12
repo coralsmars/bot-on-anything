@@ -67,7 +67,7 @@ class MJWXCom(Plugin):
             logger.info(f'handle_query img_match_prefix:{img_match_prefix}')
             query = query.split(img_match_prefix, 1)[1].strip()
             e_context['args']['type'] = 'IMAGE_CREATE'
-            e_context['reply'] = 'https://cong-img.oss-cn-hangzhou.aliyuncs.com/mj/dr_fd5d2932-317f-4f21-ab44-4c7d1a33f42a.png'
+            e_context['reply'] = 'https://image.congguoai.com/mj/dr_fd5d2932-317f-4f21-ab44-4c7d1a33f42a.png'
             e_context.action = EventAction.BREAK_PASS
             
         return e_context
