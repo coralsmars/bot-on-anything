@@ -12,7 +12,7 @@ from concurrent.futures import ThreadPoolExecutor
 from common.log import logger
 from config import *
 from common import const
-
+import uuid
 from plugins.mj import mj_global
 from plugins.plugin_manager import *
 from wechatpy.enterprise.crypto import WeChatCrypto
@@ -24,6 +24,21 @@ from flask import Flask, request, abort
 
 thread_pool = ThreadPoolExecutor(max_workers=8)
 app = Flask(__name__)
+
+def download_image(image_url, file_name):
+    response = requests.get(image_url, stream=True)
+    if response.status_code == 200:
+        try:
+
+            with open(file_name, "wb") as f:
+                for chunk in response.iter_content(chunk_size=1024):
+                    if chunk:
+                        f.write(chunk)
+            return True
+        except Exception as e:
+            log.error(str(e), exc_info=True)
+        print("图片已保存到本地：", file_name)
+    return False
 
 
 @app.route('/wechat', methods=['GET', 'POST'])
@@ -67,16 +82,14 @@ class WechatEnterpriseChannel(Channel):
         #logger.info('[WXCOM] sendMsg={}, receiver={} msg_type {}'.format(msg, receiver, msg_type))
         if msg_type == 'IMAGE_CREATE':
             image_url = reply['image_url']
-            pic_res = requests.get(image_url, stream=True)
-            image_storage = io.BytesIO()
-            for block in pic_res.iter_content(1024):
-                image_storage.write(block)
-            image_storage.seek(0)
-            data = self.client.media.upload('image', image_storage)
-            logger.info(f'json-data:{data}')
-            media_id = data.get('media_id', None)
-            if media_id is not None:
-                self.client.message.send_image(self.AppId, receiver, media_id)
+            file_name = os.getcwd() + '/' + str(uuid.uuid4()) + '.png'
+            if download_image(image_url=image_url, file_name=file_name):
+                data = self.client.media.upload('image', file_name)
+                logger.info(f'json-data:{data}')
+                media_id = data.get('media_id', None)
+                if media_id is not None:
+                    self.client.message.send_image(self.AppId, receiver, media_id)
+                os.remove(file_name)
         else:  
             msg = econtext['text']
             self.client.message.send_text(self.AppId, receiver, msg)
