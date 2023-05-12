@@ -81,7 +81,6 @@ class WechatEnterpriseChannel(Channel):
         #logger.info('[WXCOM] sendMsg={}, receiver={} msg_type {}'.format(msg, receiver, msg_type))
         if msg_type == 'IMAGE_CREATE':
             image_url = 'https://cong-img.oss-cn-hangzhou.aliyuncs.com/mj/dr_fd5d2932-317f-4f21-ab44-4c7d1a33f42a_thumail_1.png?x-oss-process=style/my_jpg' # reply['image_url']
-            from wechatpy.client.api.base import BaseWeChatAPI
             file_name = str(uuid.uuid4()) + '.jpg'
             if download_image(image_url=image_url, file_name=file_name):
                 logger.info(f'file name: {file_name} size:{os.path.getsize(file_name)}')
