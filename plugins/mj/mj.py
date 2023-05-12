@@ -1,8 +1,8 @@
 # encoding:utf-8
 
 from channel.http.http_channel import HttpChannel
-from channel.wechat.wechat_com_channel import WechatChannel
-from channel.wechat.wechat_channel import WechatComChannel
+from channel.wechat.wechat_com_channel import WechatComChannel
+from channel.wechat.wechat_channel import WechatChannel
 import plugins
 from plugins import *
 from common import functions
@@ -26,7 +26,6 @@ import requests
 class MJ(Plugin):
     def __init__(self):
         super().__init__()
-        self.handles = {HttpChannel: self.handle_http}
         self.channel_types = {
                               WechatComChannel:const.WECHAT_COM,
                               WechatChannel: const.WECHAT}
@@ -83,15 +82,7 @@ class MJ(Plugin):
                             e_context.action = EventAction.CONTINUE
         return e_context
 
-    def handle_http(self, e_context: EventContext):
-        reply = e_context["reply"]
-        if e_context['args'].get('type', '') == 'IMAGE_CREATE':
-            if isinstance(reply, list):
-                images = ""
-                for url in reply:
-                    images += f"[!['IMAGE_CREATE']({url})]({url})\n\n"
-            e_context["reply"] = images
-        return e_context
+   
 
     def send_images(self, e_context: EventContext):
         channel = e_context['channel']
