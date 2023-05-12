@@ -55,10 +55,12 @@ class MJWXCom(Plugin):
 
     
     def handle_query(self, e_context: EventContext):
-        channel = e_context['channel']
-        channel_type = self.channel_types.get(type(channel), None)
         logger.info(f'handle_query e_context:{e_context} ')
-        query = e_context['context']
+        econtext=e_context['econtext']
+        channel = econtext['channel']
+        channel_type = self.channel_types.get(type(channel), None)
+        
+        query = econtext['context']
         logger.info(f'handle_query query:{query}')
         if (query):
             img_match_prefix = functions.check_prefix(
@@ -66,10 +68,10 @@ class MJWXCom(Plugin):
             logger.info(f'handle_query img_match_prefix:{img_match_prefix}')
             query = query.split(img_match_prefix, 1)[1].strip()
             #reply = self.butt_discord(query)
-            e_context['args']['type'] = 'IMAGE_CREATE'
+            query['args']['type'] = 'IMAGE_CREATE'
             e_context['reply'] = 'https://image.congguoai.com/mj/dr_fd5d2932-317f-4f21-ab44-4c7d1a33f42a.png'
             e_context.action = EventAction.BREAK_PASS
-            
+        logger.info(f'handle_query e_context11:{e_context} ')
         return e_context
 
    

@@ -60,11 +60,12 @@ class WechatEnterpriseChannel(Channel):
         # start message listener
         app.run(host='0.0.0.0', port=_conf.get('port'))
 
-    def send(self, e_context):
-        context = e_context.args
-        msg = e_context.context
-        receiver = context.get('from_user_id', '')
-        msg_type = context.get('type', '')
+    def send(self, econtext, args):
+        
+        msg = econtext['context']
+        receiver = econtext.get('from_user_id', '')
+        msg_type = args.get('from_user_id', '')
+        
         logger.info('[WXCOM] sendMsg={}, receiver={} msg_type {}'.format(msg, receiver, msg_type))
         if msg_type == 'IMAGE_CREATE':
             pic_res = requests.get(msg, stream=True)
@@ -87,17 +88,19 @@ class WechatEnterpriseChannel(Channel):
             context['from_user_id'] = reply_user_id
             e_context = PluginManager().emit_event(EventContext(Event.ON_HANDLE_CONTEXT, {
                 'channel': self, 'context': query,  "args": context}))
+            reply = e_context.econtext['context']
+            
             if not e_context.is_pass():
-                reply = super().build_reply_content(e_context["context"], e_context["args"])
+                reply = super().build_reply_content(e_context["econtext"], e_context["args"])
                 e_context = PluginManager().emit_event(EventContext(Event.ON_DECORATE_REPLY, {
                     'channel': self, 'context': context, 'reply': reply, "args": e_context["args"]}))
                 reply = e_context['reply']
                 if reply:
-                    self.send(e_context)
+                    self.send(e_context["econtext"], e_context["args"])
             else:
                 reply = e_context['reply']
                 if reply:
-                    self.send(e_context)
+                    self.send(e_context["econtext"], e_context["args"])
         except Exception as e:
             logger.exception(e)
 
