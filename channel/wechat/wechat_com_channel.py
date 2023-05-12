@@ -92,11 +92,13 @@ class WechatEnterpriseChannel(Channel):
             
             file_name = 'image_cache/' + str(uuid.uuid4()) + '.jpg'
             if download_image(image_url=image_url, file_name=file_name):
-                data = self.client.media.upload('image', file_name)
+                data = self.client.media.upload('image', open(file_name, 'rb'))
                 logger.info(f'json-data:{data}')
                 media_id = data.get('media_id', None)
                 if media_id is not None:
                     self.client.message.send_image(self.AppId, receiver, media_id)
+                if os.path.exists(file_name):
+                    os.remove(file_name)
                 
         else:  
             msg = econtext['text']
