@@ -69,7 +69,7 @@ class MJWXCom(Plugin):
             logger.info(f'handle_query img_match_prefix:{img_match_prefix}')
             query = query.split(img_match_prefix, 1)[1].strip()
             #reply = self.butt_discord(query)
-            e_context['reply'] = dict(image_url = 'https://image.congguoai.com/mj/dr_fd5d2932-317f-4f21-ab44-4c7d1a33f42a.png', text='', type='IMAGE_CREATE')
+            e_context['reply'] = dict(image_url = 'http://image.congguoai.com/mj/dr_fd5d2932-317f-4f21-ab44-4c7d1a33f42a.png', text='', type='IMAGE_CREATE')
             e_context.action = EventAction.BREAK_PASS
         logger.info(f'handle_query e_context11:{e_context} ')
         return e_context
