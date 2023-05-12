@@ -55,7 +55,6 @@ class MJWXCom(Plugin):
 
     
     def handle_query(self, e_context: EventContext):
-        
         channel = e_context['channel']
         channel_type = self.channel_types.get(type(channel), None)
         logger.info(f'handle_query e_context:{e_context} ')
@@ -66,6 +65,7 @@ class MJWXCom(Plugin):
                 query, channel_conf_val(channel_type, 'image_create_prefix'))
             logger.info(f'handle_query img_match_prefix:{img_match_prefix}')
             query = query.split(img_match_prefix, 1)[1].strip()
+            #reply = self.butt_discord(query)
             e_context['args']['type'] = 'IMAGE_CREATE'
             e_context['reply'] = 'https://image.congguoai.com/mj/dr_fd5d2932-317f-4f21-ab44-4c7d1a33f42a.png'
             e_context.action = EventAction.BREAK_PASS

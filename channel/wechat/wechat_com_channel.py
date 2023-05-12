@@ -6,6 +6,7 @@
 @file: wechat_com_channel.py
 
 """
+import requests,io
 from channel.channel import Channel
 from concurrent.futures import ThreadPoolExecutor
 from common.log import logger
@@ -43,6 +44,9 @@ _conf = conf().get("channel").get("wechat_com")
 
 
 class WechatEnterpriseChannel(Channel):
+
+
+
     def __init__(self):
         self.CorpId = _conf.get('wechat_corp_id')
         self.Secret = _conf.get('secret')
@@ -56,11 +60,25 @@ class WechatEnterpriseChannel(Channel):
         # start message listener
         app.run(host='0.0.0.0', port=_conf.get('port'))
 
-    def send(self, msg, receiver):
-        logger.info('[WXCOM] sendMsg={}, receiver={}'.format(msg, receiver))
-        self.client.message.send_text(self.AppId, receiver, msg)
+    def send(self, e_context):
+        context = e_context.get('args', dict())
+        msg = e_context.get('reply', '')
+        receiver = context.get('from_user_id', '')
+        msg_type = context.get('type', '')
+        logger.info('[WXCOM] sendMsg={}, receiver={} msg_type {}'.format(msg, receiver, msg_type))
+        if msg_type == 'IMAGE_CREATE':
+            pic_res = requests.get(msg, stream=True)
+            image_storage = io.BytesIO()
+            for block in pic_res.iter_content(1024):
+                image_storage.write(block)
+            image_storage.seek(0)
+            data = self.client.media.upload(self.AppId, 'image', image_storage)
+            media_id = data.get('media_id', None)
+            if media_id is not None:
+                self.client.message.send_image(self.AppId, receiver, media_id)
+        else:  
+            self.client.message.send_text(self.AppId, receiver, msg)
 
-    
     def _do_send(self, query, reply_user_id):
         try:
             if not query:
@@ -69,19 +87,21 @@ class WechatEnterpriseChannel(Channel):
             context['from_user_id'] = reply_user_id
             e_context = PluginManager().emit_event(EventContext(Event.ON_HANDLE_CONTEXT, {
                 'channel': self, 'context': query,  "args": context}))
-            reply = e_context['reply']
             if not e_context.is_pass():
                 reply = super().build_reply_content(e_context["context"], e_context["args"])
                 e_context = PluginManager().emit_event(EventContext(Event.ON_DECORATE_REPLY, {
                     'channel': self, 'context': context, 'reply': reply, "args": e_context["args"]}))
                 reply = e_context['reply']
                 if reply:
-                    self.send(reply, reply_user_id)
+                    self.send(e_context)
             else:
-                self.send(reply, reply_user_id)
+                reply = e_context['reply']
+                if reply:
+                    self.send(e_context)
         except Exception as e:
             logger.exception(e)
 
+    
 
     def handle(self):
         query_params = request.args
