@@ -28,7 +28,7 @@ class MJWXCom(Plugin):
         super().__init__()
         self.channel_types = {
                               WechatEnterpriseChannel:const.WECHAT_COM,
-                              WechatChannel: const.WECHAT}
+                              }
         self.handlers[Event.ON_HANDLE_CONTEXT] = self.handle_query
 
 
@@ -68,21 +68,10 @@ class MJWXCom(Plugin):
             query = query.split(img_match_prefix, 1)[1].strip()
             e_context['args']['type'] = 'IMAGE_CREATE'
             e_context['reply'] = 'https://cong-img.oss-cn-hangzhou.aliyuncs.com/mj/dr_fd5d2932-317f-4f21-ab44-4c7d1a33f42a.png'
-            if (channel_type == const.WECHAT or channel_type == const.WECHAT_COM):
-                self.send_images(
-                    e_context)
-                e_context.action = EventAction.BREAK_PASS
-            else:
-                e_context.action = EventAction.CONTINUE
+            e_context.action = EventAction.BREAK_PASS
             
         return e_context
 
    
 
-    def send_images(self, e_context: EventContext):
-        channel = e_context['channel']
-        method = self.handles.get(type(channel), None)
-        if (method):
-            e_context = method(e_context)
-        e_context.action = EventAction.BREAK_PASS  # 事件结束，不再给下个插件处理，不交付给默认的事件处理逻辑
-        return e_context
+  
