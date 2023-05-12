@@ -21,7 +21,6 @@ from wechatpy.exceptions import InvalidSignatureException
 from wechatpy.enterprise.exceptions import InvalidCorpIdException
 from wechatpy.enterprise import parse_message
 from flask import Flask, request, abort
-
 thread_pool = ThreadPoolExecutor(max_workers=8)
 app = Flask(__name__)
 
@@ -90,10 +89,10 @@ class WechatEnterpriseChannel(Channel):
             media_id = None
             
             
-            file_name = 'image_cache/' + str(uuid.uuid4()) + '.jpg'
+            file_name = str(uuid.uuid4()) + '.jpg'
             if download_image(image_url=image_url, file_name=file_name):
-                print(f'file_name: {file_name} size: {os.path.getsize(file_name)}')
-                data = self.client.media.upload('file', open(file_name, 'rb'))
+                
+                data = self.client.media.upload('image', media_file=open(file_name, 'rb'))
                 logger.info(f'json-data:{data}')
                 media_id = data.get('media_id', None)
                 if media_id is not None:
