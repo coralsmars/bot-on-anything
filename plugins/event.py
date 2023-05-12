@@ -57,3 +57,6 @@ class EventContext:
 
     def is_pass(self):
         return self.action == EventAction.BREAK_PASS
+    
+    def __str__(self) -> str:
+        return f'{dict(self.__dict__)}'

@@ -55,9 +55,10 @@ class MJ(Plugin):
 
     
     def handle_query(self, e_context: EventContext):
+        
         channel = e_context['channel']
         channel_type = self.channel_types.get(type(channel), None)
-        logger.info(f'handle_query channel:{channel} channel_type:{channel_type}')
+        logger.info(f'handle_query e_context:{e_context} ')
         query = e_context['context']
         logger.info(f'handle_query query:{query}')
         if (query):
