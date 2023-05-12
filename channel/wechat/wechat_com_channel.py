@@ -60,15 +60,14 @@ class WechatEnterpriseChannel(Channel):
         # start message listener
         app.run(host='0.0.0.0', port=_conf.get('port'))
 
-    def send(self, econtext, args):
-        
-        msg = econtext['context']
-        receiver = econtext.get('from_user_id', '')
-        msg_type = args.get('from_user_id', '')
+    def send(self, receiver, econtext, reply):
+       
+        msg_type = reply.get('type', 'text')
         
         logger.info('[WXCOM] sendMsg={}, receiver={} msg_type {}'.format(msg, receiver, msg_type))
         if msg_type == 'IMAGE_CREATE':
-            pic_res = requests.get(msg, stream=True)
+            image_url = reply['image_url']
+            pic_res = requests.get(image_url, stream=True)
             image_storage = io.BytesIO()
             for block in pic_res.iter_content(1024):
                 image_storage.write(block)
@@ -78,6 +77,7 @@ class WechatEnterpriseChannel(Channel):
             if media_id is not None:
                 self.client.message.send_image(self.AppId, receiver, media_id)
         else:  
+            msg = econtext['text']
             self.client.message.send_text(self.AppId, receiver, msg)
 
     def _do_send(self, query, reply_user_id):
@@ -96,11 +96,11 @@ class WechatEnterpriseChannel(Channel):
                     'channel': self, 'context': context, 'reply': reply, "args": e_context["args"]}))
                 reply = e_context['reply']
                 if reply:
-                    self.send(e_context["econtext"], e_context["args"])
+                    self.send(reply_user_id, e_context["econtext"], e_context["reply"])
             else:
                 reply = e_context['reply']
                 if reply:
-                    self.send(e_context["econtext"], e_context["args"])
+                    self.send(reply_user_id, e_context["econtext"], e_context["reply"])
         except Exception as e:
             logger.exception(e)
 
