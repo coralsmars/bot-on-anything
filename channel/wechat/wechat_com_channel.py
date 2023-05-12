@@ -64,7 +64,7 @@ class WechatEnterpriseChannel(Channel):
        
         msg_type = reply.get('type', 'text')
         
-        logger.info('[WXCOM] sendMsg={}, receiver={} msg_type {}'.format(msg, receiver, msg_type))
+        #logger.info('[WXCOM] sendMsg={}, receiver={} msg_type {}'.format(msg, receiver, msg_type))
         if msg_type == 'IMAGE_CREATE':
             image_url = reply['image_url']
             pic_res = requests.get(image_url, stream=True)
