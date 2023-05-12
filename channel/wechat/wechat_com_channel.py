@@ -82,16 +82,22 @@ class WechatEnterpriseChannel(Channel):
         #logger.info('[WXCOM] sendMsg={}, receiver={} msg_type {}'.format(msg, receiver, msg_type))
         if msg_type == 'IMAGE_CREATE':
             image_url = reply['image_url']
-            file_name = os.getcwd() + '/' + str(uuid.uuid4()) + '.png'
+            # pic_res = requests.get(image_url, stream=True)
+            # image_storage = io.BytesIO()
+            # for block in pic_res.iter_content(1024):
+            #     image_storage.write(block)
+            # image_storage.seek(0)
+            media_id = None
+            
+            
+            file_name = 'image_cache/' + str(uuid.uuid4()) + '.png'
             if download_image(image_url=image_url, file_name=file_name):
-                media_id = None
-                with open(file_name, 'rb+') as f:
-                    data = self.client.media.upload('image', f)
-                    logger.info(f'json-data:{data}')
-                    media_id = data.get('media_id', None)
+                data = self.client.media.upload('image', file_name)
+                logger.info(f'json-data:{data}')
+                media_id = data.get('media_id', None)
                 if media_id is not None:
                     self.client.message.send_image(self.AppId, receiver, media_id)
-                os.remove(file_name)
+                
         else:  
             msg = econtext['text']
             self.client.message.send_text(self.AppId, receiver, msg)
