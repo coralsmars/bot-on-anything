@@ -28,7 +28,7 @@ class MJ(Plugin):
         self.handles = {HttpChannel: self.handle_http}
         self.channel_types = {HttpChannel: const.HTTP,
                               WechatChannel: const.WECHAT}
-        self.handlers[Event.ON_HANDLE_CONTEXT] = self.handle_query
+        self.handlers[Event.ON_BRIDGE_HANDLE_CONTEXT] = self.handle_query
 
 
     def get_events(self):
