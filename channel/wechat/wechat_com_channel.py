@@ -72,7 +72,8 @@ class WechatEnterpriseChannel(Channel):
             for block in pic_res.iter_content(1024):
                 image_storage.write(block)
             image_storage.seek(0)
-            data = self.client.media.upload(self.AppId, 'image', image_storage)
+            data = self.client.media.upload('image', image_storage)
+            logger.info(f'json-data:{data}')
             media_id = data.get('media_id', None)
             if media_id is not None:
                 self.client.message.send_image(self.AppId, receiver, media_id)
