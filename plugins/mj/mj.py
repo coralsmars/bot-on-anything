@@ -22,14 +22,14 @@ from common.log import logger
 import requests
 
 
-@plugins.register(name="MJ", desire_priority=100, hidden=True, desc="A MJ plugin that create images from model", version="0.1", author="Martins")
-class MJ(Plugin):
+@plugins.register(name="MJWXCom", desire_priority=100, hidden=True, desc="A MJ plugin that create images from model", version="0.1", author="Martins")
+class MJWXCom(Plugin):
     def __init__(self):
         super().__init__()
         self.channel_types = {
                               WechatEnterpriseChannel:const.WECHAT_COM,
                               WechatChannel: const.WECHAT}
-        self.handlers[Event.ON_BRIDGE_HANDLE_CONTEXT] = self.handle_query
+        self.handlers[Event.ON_HANDLE_CONTEXT] = self.handle_query
 
 
     def get_events(self):

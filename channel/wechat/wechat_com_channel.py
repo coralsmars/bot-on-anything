@@ -9,8 +9,11 @@
 from channel.channel import Channel
 from concurrent.futures import ThreadPoolExecutor
 from common.log import logger
-from config import conf
+from config import *
+from common import const
+
 from plugins.mj import mj_global
+from plugins.plugin_manager import *
 from wechatpy.enterprise.crypto import WeChatCrypto
 from wechatpy.enterprise import WeChatClient
 from wechatpy.exceptions import InvalidSignatureException
@@ -57,17 +60,28 @@ class WechatEnterpriseChannel(Channel):
         logger.info('[WXCOM] sendMsg={}, receiver={}'.format(msg, receiver))
         self.client.message.send_text(self.AppId, receiver, msg)
 
+    
     def _do_send(self, query, reply_user_id):
         try:
             if not query:
                 return
             context = dict()
             context['from_user_id'] = reply_user_id
-            reply_text = super().build_reply_content(query, context)
-            if reply_text:
-                self.send(reply_text, reply_user_id)
+            e_context = PluginManager().emit_event(EventContext(Event.ON_HANDLE_CONTEXT, {
+                'channel': self, 'context': query,  "args": context}))
+            reply = e_context['reply']
+            if not e_context.is_pass():
+                reply = super().build_reply_content(e_context["context"], e_context["args"])
+                e_context = PluginManager().emit_event(EventContext(Event.ON_DECORATE_REPLY, {
+                    'channel': self, 'context': context, 'reply': reply, "args": e_context["args"]}))
+                reply = e_context['reply']
+                if reply:
+                    self.send(reply, reply_user_id)
+            else:
+                self.send(reply, reply_user_id)
         except Exception as e:
             logger.exception(e)
+
 
     def handle(self):
         query_params = request.args
