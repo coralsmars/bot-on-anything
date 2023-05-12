@@ -56,7 +56,7 @@ class MJWXCom(Plugin):
     
     def handle_query(self, e_context: EventContext):
         logger.info(f'handle_query e_context:{e_context} ')
-        econtext=e_context['econtext']
+        econtext= e_context.econtext
         logger.info(f'handle_query econtext:{econtext} ')
         channel = econtext['channel']
         channel_type = self.channel_types.get(type(channel), None)
