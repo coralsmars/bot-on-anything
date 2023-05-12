@@ -1,7 +1,7 @@
 # encoding:utf-8
 
 from channel.http.http_channel import HttpChannel
-from channel.wechat.wechat_com_channel import WechatComChannel
+from channel.wechat.wechat_com_channel import WechatEnterpriseChannel
 from channel.wechat.wechat_channel import WechatChannel
 import plugins
 from plugins import *
@@ -27,7 +27,7 @@ class MJ(Plugin):
     def __init__(self):
         super().__init__()
         self.channel_types = {
-                              WechatComChannel:const.WECHAT_COM,
+                              WechatEnterpriseChannel:const.WECHAT_COM,
                               WechatChannel: const.WECHAT}
         self.handlers[Event.ON_BRIDGE_HANDLE_CONTEXT] = self.handle_query
 
