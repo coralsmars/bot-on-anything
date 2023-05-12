@@ -61,8 +61,8 @@ class WechatEnterpriseChannel(Channel):
         app.run(host='0.0.0.0', port=_conf.get('port'))
 
     def send(self, e_context):
-        context = e_context.get('args', dict())
-        msg = e_context.get('reply', '')
+        context = e_context.args
+        msg = e_context.context
         receiver = context.get('from_user_id', '')
         msg_type = context.get('type', '')
         logger.info('[WXCOM] sendMsg={}, receiver={} msg_type {}'.format(msg, receiver, msg_type))
