@@ -81,18 +81,18 @@ class WechatEnterpriseChannel(Channel):
         #logger.info('[WXCOM] sendMsg={}, receiver={} msg_type {}'.format(msg, receiver, msg_type))
         if msg_type == 'IMAGE_CREATE':
             image_url = 'https://cong-img.oss-cn-hangzhou.aliyuncs.com/mj/dr_fd5d2932-317f-4f21-ab44-4c7d1a33f42a_thumail_1.png?x-oss-process=style/my_jpg' # reply['image_url']
-            # pic_res = requests.get(image_url, stream=True)
-            # image_storage = io.BytesIO()
-            # for block in pic_res.iter_content(1024):
-            #     image_storage.write(block)
-            # image_storage.seek(0)
+            pic_res = requests.get(image_url, stream=True)
+            image_storage = io.BytesIO()
+            for block in pic_res.iter_content(1024):
+                image_storage.write(block)
+            image_storage.seek(0)
             media_id = None
             
             
             file_name = str(uuid.uuid4()) + '.jpg'
             if download_image(image_url=image_url, file_name=file_name):
                 logger.info(f'file name: {file_name} size:{os.path.getsize(file_name)}')
-                data = self.client.media.upload('image', media_file={'file':open(file_name, 'rb')})
+                data = self.client.media.upload('image', media_file=image_storage)
                 logger.info(f'json-data:{data}')
                 media_id = data.get('media_id', None)
                 if media_id is not None:
