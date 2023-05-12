@@ -21,7 +21,7 @@ from common.log import logger
 import requests
 
 
-@plugins.register(name="MJ", desire_priority=0, hidden=True, desc="A MJ plugin that create images from model", version="0.1", author="Martins")
+@plugins.register(name="MJ", desire_priority=100, hidden=True, desc="A MJ plugin that create images from model", version="0.1", author="Martins")
 class MJ(Plugin):
     def __init__(self):
         super().__init__()
@@ -29,9 +29,7 @@ class MJ(Plugin):
         self.channel_types = {HttpChannel: const.HTTP,
                               WechatChannel: const.WECHAT}
         self.handlers[Event.ON_HANDLE_CONTEXT] = self.handle_query
-        self.handlers[Event.ON_DECORATE_REPLY] = self.send_images
 
-        
 
     def get_events(self):
         return self.handlers
@@ -56,15 +54,16 @@ class MJ(Plugin):
 
     
     def handle_query(self, e_context: EventContext):
-        logger.info(f'e_context: {json.dumps(e_context)}')
         channel = e_context['channel']
         channel_type = self.channel_types.get(type(channel), None)
+        logger.info(f'handle_query channel_type:{channel_type}')
         if (channel_type):
             query = e_context['context']
-            print(f'e_context query: {query} ')
+            logger.info(f'handle_query query:{query}')
             if (query):
                 img_match_prefix = functions.check_prefix(
                     query, channel_conf_val(channel_type, 'image_create_prefix'))
+                logger.info(f'handle_query img_match_prefix:{img_match_prefix}')
                 if img_match_prefix:
                     if (channel_type == const.HTTP) and e_context['args'].get('stream', False):
                         e_context['reply'] = channel.handle(
@@ -72,6 +71,7 @@ class MJ(Plugin):
                         e_context.action = EventAction.BREAK_PASS
                     else:
                         query = query.split(img_match_prefix, 1)[1].strip()
+                        logger.info(f'handle_query query11:{channel_type}') 
                         e_context['args']['type'] = 'IMAGE_CREATE'
                         if (channel_type == const.WECHAT):
                             channel._do_send_img(
@@ -80,11 +80,9 @@ class MJ(Plugin):
                         else:
                             e_context.action = EventAction.CONTINUE
         return e_context
-    
 
     def handle_http(self, e_context: EventContext):
         reply = e_context["reply"]
-        logger.info(f'e_context handle_http reply: {reply}')
         if e_context['args'].get('type', '') == 'IMAGE_CREATE':
             if isinstance(reply, list):
                 images = ""

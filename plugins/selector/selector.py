@@ -7,7 +7,7 @@ from common import log
 from common import functions
 
 
-@plugins.register(name="Selector", desire_priority=99, hidden=True, desc="A model selector", version="0.1", author="RegimenArsenic")
+@plugins.register(name="Selector", desire_priority=0, hidden=True, desc="A model selector", version="0.1", author="RegimenArsenic")
 class Selector(Plugin):
     def __init__(self):
         super().__init__()
