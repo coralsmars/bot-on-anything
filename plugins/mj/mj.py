@@ -57,29 +57,23 @@ class MJ(Plugin):
     def handle_query(self, e_context: EventContext):
         channel = e_context['channel']
         channel_type = self.channel_types.get(type(channel), None)
-        logger.info(f'handle_query channel_type:{channel_type}')
-        if (channel_type):
-            query = e_context['context']
-            logger.info(f'handle_query query:{query}')
-            if (query):
-                img_match_prefix = functions.check_prefix(
-                    query, channel_conf_val(channel_type, 'image_create_prefix'))
-                logger.info(f'handle_query img_match_prefix:{img_match_prefix}')
-                if img_match_prefix:
-                    if (channel_type == const.HTTP) and e_context['args'].get('stream', False):
-                        e_context['reply'] = channel.handle(
-                            {'msg': e_context['args']['origin'], 'id': e_context['args']['from_user_id']})
-                        e_context.action = EventAction.BREAK_PASS
-                    else:
-                        query = query.split(img_match_prefix, 1)[1].strip()
-                        logger.info(f'handle_query query11:{channel_type}') 
-                        e_context['args']['type'] = 'IMAGE_CREATE'
-                        if (channel_type == const.WECHAT):
-                            channel._do_send_img(
-                                query, e_context['args'])
-                            e_context.action = EventAction.BREAK_PASS
-                        else:
-                            e_context.action = EventAction.CONTINUE
+        logger.info(f'handle_query channel:{channel} channel_type:{channel_type}')
+        query = e_context['context']
+        logger.info(f'handle_query query:{query}')
+        if (query):
+            img_match_prefix = functions.check_prefix(
+                query, channel_conf_val(channel_type, 'image_create_prefix'))
+            logger.info(f'handle_query img_match_prefix:{img_match_prefix}')
+            query = query.split(img_match_prefix, 1)[1].strip()
+            
+            e_context['args']['type'] = 'IMAGE_CREATE'
+            if (channel_type == const.WECHAT):
+                channel._do_send_img(
+                    query, e_context['args'])
+                e_context.action = EventAction.BREAK_PASS
+            else:
+                e_context.action = EventAction.CONTINUE
+            
         return e_context
 
    
