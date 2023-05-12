@@ -66,9 +66,9 @@ class MJWXCom(Plugin):
                 query, channel_conf_val(channel_type, 'image_create_prefix'))
             logger.info(f'handle_query img_match_prefix:{img_match_prefix}')
             query = query.split(img_match_prefix, 1)[1].strip()
-            
             e_context['args']['type'] = 'IMAGE_CREATE'
-            if (channel_type == const.WECHAT):
+            e_context['reply'] = 'https://cong-img.oss-cn-hangzhou.aliyuncs.com/mj/dr_fd5d2932-317f-4f21-ab44-4c7d1a33f42a.png'
+            if (channel_type == const.WECHAT or channel_type == const.WECHAT_COM):
                 channel._do_send_img(
                     query, e_context['args'])
                 e_context.action = EventAction.BREAK_PASS
