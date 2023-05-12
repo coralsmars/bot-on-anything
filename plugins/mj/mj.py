@@ -69,8 +69,8 @@ class MJWXCom(Plugin):
             e_context['args']['type'] = 'IMAGE_CREATE'
             e_context['reply'] = 'https://cong-img.oss-cn-hangzhou.aliyuncs.com/mj/dr_fd5d2932-317f-4f21-ab44-4c7d1a33f42a.png'
             if (channel_type == const.WECHAT or channel_type == const.WECHAT_COM):
-                channel._do_send_img(
-                    query, e_context['args'])
+                self.send_images(
+                    e_context)
                 e_context.action = EventAction.BREAK_PASS
             else:
                 e_context.action = EventAction.CONTINUE
